@@ -1,4 +1,4 @@
-package com.example.spring;
+package com.example.spring.config;
 
 import com.example.spring.repository.UserRepository;
 import com.example.spring.user.Entity;

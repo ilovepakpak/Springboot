@@ -17,12 +17,12 @@ public class Entity {
     @Id()
     @SequenceGenerator(
             name = "Company_sequence",
-            sequenceName = "Company_sequence",
-            allocationSize = 1
+            sequenceName = "Company_sequence"
+            ,allocationSize = 50
 
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.UUID,
             generator = "Company_sequence"
     )
     private Long id;
