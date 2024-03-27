@@ -3,15 +3,21 @@ package com.example.spring.service;
 import com.example.spring.dto.request.Request;
 import com.example.spring.repository.UserRepository;
 import com.example.spring.user.Entity;
+
+import jakarta.transaction.TransactionScoped;
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.imageio.IIOException;
 @Service
 public class UserService {
-    private final UserRepository userRepository;
+    private  UserRepository userRepository;
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -31,5 +37,32 @@ public class UserService {
         entity.setRole(request.getRole());
         entity.setStatus(request.getStatus());
         return entity;
+    }
+    public  void deleteUser(Long UserID) {
+        boolean exists = userRepository.existsById(UserID);
+        if(!exists) {
+            throw new IllegalStateException("User with id " + UserID + " does not exist");
+        } else {
+            userRepository.deleteById(UserID);
+        }
+     }
+    @Transactional 
+    public void updateUser(Long UserID , String email , String name ) {
+        Optional <Entity> eOptional = userRepository.findById(UserID);
+        if(!eOptional.isPresent()) {
+            throw new IllegalStateException("User with id " + UserID + " does not exist");
+        } else {
+            Entity entity = eOptional.get();
+            if(name != null && name.length() > 0 && !entity.getName().equals(name)) {
+                entity.setName(name);
+            }
+            if(email != null && email.length() > 0 && !entity.getEmail().equals(email)) {
+                Optional<Entity> userOptional = userRepository.findUserByEmail(email);
+                if(userOptional.isPresent()) {
+                    throw new IllegalStateException("Email already taken");
+                }
+                entity.setEmail(email);
+            }
+        }
     }
 }

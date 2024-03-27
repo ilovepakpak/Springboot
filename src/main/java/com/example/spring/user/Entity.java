@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
-import java.util.Locale;
-
 @jakarta.persistence.Entity
 @Component
 @NoArgsConstructor
