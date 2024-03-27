@@ -4,17 +4,14 @@ import com.example.spring.dto.request.Request;
 import com.example.spring.repository.UserRepository;
 import com.example.spring.user.Entity;
 
-import jakarta.transaction.TransactionScoped;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-import javax.imageio.IIOException;
 @Service
 public class UserService {
     private  UserRepository userRepository;
