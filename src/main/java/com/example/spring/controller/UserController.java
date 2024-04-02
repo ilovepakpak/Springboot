@@ -5,6 +5,7 @@ import com.example.spring.service.UserService;
 import com.example.spring.user.Entity;
 
 
+import org.apache.tomcat.util.digester.ArrayStack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +26,14 @@ public class UserController {
     public UserController (UserService userService) {
         this.userService = userService;
     }
-    @GetMapping("/get")
+    @GetMapping("/get/alluser")
     public List<Entity> get() {
         return userService.getUser();
     }
+    // @GetMapping(path =  "/get/{UserID}")
+    // public void getUser(@PathVariable("UserID") Long UserID) {
+    //         userService.getParticipateUserById(UserID);
+    // }
     private UserRepository userRepository;
     @PostMapping("/post")
     public void registeruser(Entity entity) {
@@ -49,5 +54,17 @@ public class UserController {
         @RequestParam(required =  false) String email) {
             userService.updateUser(UserID, email, name);
     }
+    @GetMapping(path = "/get/{UserID}") 
+    public List<?> getParticipateUserById(@PathVariable("UserID") Long UserID) {
+        return List.of(userService.getParticipateEntity(UserID));
+    }
 
+    @GetMapping(path =  "/get/bean/{UserID}") 
+    public List<Entity> geListBaseOnRole( 
+        @PathVariable("UserID" ) Long UserID , @PathVariable("Role") @RequestParam(required = true )  String Role  ) {
+            List<Entity> entities = new ArrayStack<Entity>();
+            entities.add(userService.getListBaseOnRoleFromAccount(UserID));
+            return entities;
+            
+     }
 }
