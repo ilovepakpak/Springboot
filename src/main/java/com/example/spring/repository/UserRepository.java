@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<Entity, Long>{
     @org.springframework.data.jpa.repository.Query("SELECT s FROM Entity s WHERE s.email = ?1")
-    Optional<Entity> findUserByEmail(String email);
+    Optional<Entity> findUserByEmail(String Email);
+    @org.springframework.data.jpa.repository.Query("SELECT s FROM Entity s WHERE s.id = ?1")
+    Optional<Entity> findUserByID(Long Id);
     
 }

@@ -6,6 +6,7 @@ import com.example.spring.user.Entity;
 
 import jakarta.transaction.Transactional;
 
+import org.hibernate.internal.util.collections.ConcurrentReferenceHashMap.Option;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.IllegalTransactionStateException;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    @Autowired
     private  UserRepository userRepository;
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -24,8 +26,12 @@ public class UserService {
       return   userRepository.findAll();
     }
 
-    public void addNewUser(Entity entity) {
-        System.out.println(entity);
+    public Entity addNewUser(Entity entity) {
+        Optional<Entity> userOptional = userRepository.findUserByID(entity.getId());
+        if(userOptional.isPresent()) {
+            throw new IllegalStateException("User already exists");
+        }else 
+        return userRepository.save(entity);
     }
     public Entity userCreationRequest(Request request) {
         Entity entity = new Entity();
@@ -95,16 +101,19 @@ public class UserService {
        return entity1;
     }  
     }
-    public Entity getListBaseOnRoleFromAccount(Long UserID ) {
-        Optional <Entity> eOptional = userRepository.findById(UserID);
-        if(!eOptional.isPresent()) {
-            throw new IllegalTransactionStateException("Can not get user :"+ UserID + "does not exist");        }
-     else { 
-        if(eOptional.get().getRole() == "admin")  {
-            return getParticipateEntityByAdmin(UserID);          
+
+    public Entity getListBaseOnRoleFromAccount(Long UserID) {
+        Optional<Entity> eOptional = userRepository.findById(UserID);
+        if (!eOptional.isPresent()) {
+            throw new IllegalTransactionStateException("Can not get user :" + UserID + "does not exist");
+        } else {
+            Entity entity = eOptional.get();
+            if (entity.getRole().equals("admin")) {
+                return getParticipateEntityByAdmin(UserID);
+            } else 
+            return getParticipateEntityByAdmin(UserID);
         }
-        return getParticipateEntity(UserID); }
-}
+    }
 // public List<Entity> getListBaseOnRoleFromEntities(Long UserID) {
 //     Optional <Entity> eOptional = userRepository.findById(UserID);
 //     if(!eOptional.isPresent()) {
